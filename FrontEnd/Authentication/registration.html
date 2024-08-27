@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="register.css"> <!-- Link to external CSS file -->
+</head>
+
+<body>
+    <div class="card">
+        <h2 class="text-center">Sign Up</h2>
+        <form id="signupForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" class="form-control" id="confirmPassword" required>
+            </div>
+            <button type="submit" id="submit" class="btn btn-primary">Sign Up</button>
+        </form>
+        <div id="message" class="mt-3"></div>
+    </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            var username = document.getElementById('username').value;
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            var confirmPassword = document.getElementById('confirmPassword').value;
+            var messageElement = document.getElementById('message');
+            messageElement.innerText = '';
+
+            var usernameRegex = /^[A-Za-z\s]+$/;
+            if (!usernameRegex.test(username)) {
+                messageElement.innerText = 'Username should contain only alphabets and spaces.';
+                return;
+            }
+
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                messageElement.innerText = 'Please enter a valid email address.';
+                return;
+            }
+
+            var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            if (!passwordRegex.test(password)) {
+                messageElement.innerText = 'Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one special character.';
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                messageElement.innerText = 'Passwords do not match.';
+                return;
+            }
+
+            alert('Registration successful!');
+
+            var payload = {
+                userName: username,
+                email: email,
+                password: password,
+                roles: ["USER"]
+            };
+
+            fetch('http://localhost:8082/public/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = 'login.html?message=Registered successfully';
+                    } else {
+                        response.text().then(text => {
+                            messageElement.innerText = `Sign-up failed: ${text}`;
+                        });
+                    }
+                })
+                .catch(error => {
+                    messageElement.innerText = 'Sign-up failed. Please try again.';
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+</body>
+
+</html>

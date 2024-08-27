@@ -1,0 +1,67 @@
+body {
+    font-family: 'Times New Roman', Times, serif, sans-serif;
+    background-image: url('logreg.jpg'); /* Replace with your image URL */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: flex-start; /* Aligns form to the left */
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    padding-left: 50px; /* Adds space to the left of the form */
+}
+
+.card {
+    padding: 40px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    backdrop-filter: blur(10px); /* Optional: Adds blur effect to the background */
+}
+
+h2.text-center {
+    text-align: center;
+    color: #333333;
+    margin-bottom: 30px;
+    font-size: 35px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #666666;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+    color: #333333;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+#message {
+    color: #d9534f;
+    margin-top: 20px;
+    text-align: center;
+}

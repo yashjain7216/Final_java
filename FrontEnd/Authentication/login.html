@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="login.css">
+    <script>
+        async function login(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('error-message');
+
+            try {
+                const response = await fetch('http://localhost:8082/public/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userName: username, password: password })
+                });
+
+                if (response.ok) {
+                    const jwt = await response.text();
+                    localStorage.setItem('jwt', jwt);
+                    window.location.href = 'all-blogs.html'; // Redirect to the "View All Blogs" page
+                } else {
+                    const error = await response.text();
+                    errorMessage.textContent = `Error: ${error}`;
+                    errorMessage.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error during login:', error);
+                errorMessage.textContent = 'An unexpected error occurred. Please try again later.';
+                errorMessage.style.display = 'block';
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="login-container">
+        <h1>Login</h1>
+        <form onsubmit="login(event)">
+            <div class="error-message" id="error-message" style="display: none;"></div>
+            <label for="username">Username</label>
+            <input type="text" id="username" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" required>
+
+            <button type="submit">Login</button>
+        </form>
+    </div>
+</body>
+
+</html>

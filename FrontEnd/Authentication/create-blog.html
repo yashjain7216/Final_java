@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Blog Entry</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"],
+        textarea,
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 20px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Create a New Blog Entry</h1>
+        <form id="blogForm">
+            <label for="title">Title:</label><br>
+            <input type="text" id="title" name="title" required><br>
+
+            <label for="content">Content:</label><br>
+            <textarea id="content" name="content" rows="10" cols="30" required></textarea><br>
+
+            <label for="image">Add Image:</label><br>
+            <input type="file" id="image" name="image" accept="image/jpeg, image/png"><br>
+
+            <button type="button" onclick="submitForm()">Create Blog</button>
+            <div class="loading" id="loading">Creating your blog, please wait...</div>
+        </form>
+    </div>
+
+    <script>
+        async function submitForm() {
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+            const imageFile = document.getElementById('image').files[0];
+
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('content', content);
+
+            if (imageFile) {
+                formData.append('image', imageFile);
+            }
+
+            const jwtToken = localStorage.getItem('jwt');
+
+            if (!jwtToken) {
+                alert('You need to log in first.');
+                window.location.href = 'login.html'; // Redirect to login if JWT is not available
+                return;
+            }
+
+            // Show loading indicator
+            const loadingIndicator = document.getElementById('loading');
+            loadingIndicator.style.display = 'block';
+
+            try {
+                const response = await fetch('http://localhost:8082/bloggiator', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${jwtToken}`
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                loadingIndicator.style.display = 'none'; // Hide loading indicator
+
+                if (response.status === 201) {
+                    alert('Blog created successfully!');
+                    window.location.href = 'all-blogs.html'; // Redirect to all blogs page
+                } else {
+                    alert(`Failed to create blog: ${data.message || 'Please try again.'}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while creating the blog. Please try again.');
+                loadingIndicator.style.display = 'none'; // Hide loading indicator
+            }
+        }
+    </script>
+</body>
+</html>

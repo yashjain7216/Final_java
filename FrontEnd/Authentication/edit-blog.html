@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Blog</title>
+    <link rel="stylesheet" href="edit-blog.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Blog Post</h1>
+        <form id="editBlogForm">
+            <div class="form-group">
+                <label for="blogTitle">Title</label>
+                <input type="text" id="blogTitle" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="blogContent">Content</label>
+                <textarea id="blogContent" name="content" rows="10" required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Save Changes</button>
+            <a href="view-blog.html?id=" id="cancelEdit" class="cancel-link">Cancel</a>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const blogId = urlParams.get('id');
+
+            if (!blogId) {
+                alert('No blog ID provided');
+                window.location.href = 'all-blogs.html'; // Redirect if no ID is found
+                return;
+            }
+
+            const jwt = localStorage.getItem('jwt');
+            if (!jwt) {
+                alert('You need to log in first');
+                window.location.href = 'login.html'; // Redirect to login page if no JWT
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:8082/bloggiator/id/${blogId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + jwt
+                    }
+                });
+
+                if (response.ok) {
+                    const blog = await response.json();
+
+                    // Populate the form with the existing blog data
+                    document.getElementById('blogTitle').value = blog.title;
+                    document.getElementById('blogContent').value = blog.content;
+
+                    // Set the cancel link back to the blog view page
+                    document.getElementById('cancelEdit').href = `view-blog.html?id=${blog.id}`;
+                } else if (response.status === 404) {
+                    alert('Blog not found');
+                    window.location.href = 'all-blogs.html'; // Redirect if the blog is not found
+                } else {
+                    alert('Error fetching blog');
+                }
+            } catch (error) {
+                console.error('Error fetching blog:', error);
+                alert('Failed to connect to the server. Please try again later.');
+            }
+        });
+
+        document.getElementById('editBlogForm').addEventListener('submit', async function (event) {
+            event.preventDefault(); // Prevent form submission
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const blogId = urlParams.get('id');
+            const jwt = localStorage.getItem('jwt');
+
+            if (!jwt) {
+                alert('You need to log in first');
+                window.location.href = 'login.html'; // Redirect to login page if no JWT
+                return;
+            }
+
+            // Prepare the updated data
+            const blogData = {
+                title: document.getElementById('blogTitle').value,
+                content: document.getElementById('blogContent').value
+            };
+
+            try {
+                const response = await fetch(`http://localhost:8082/bloggiator/id/${blogId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': 'Bearer ' + jwt,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(blogData)
+                });
+
+                if (response.ok) {
+                    alert('Blog post updated successfully');
+                    window.location.href = `view-blog.html?id=${blogId}`; // Redirect to the blog view page after successful update
+                } else if (response.status === 404) {
+                    alert('Blog not found');
+                    window.location.href = 'all-blogs.html'; // Redirect if the blog is not found
+                } else {
+                    alert('Error updating blog');
+                }
+            } catch (error) {
+                console.error('Error updating blog:', error);
+                alert('Failed to connect to the server. Please try again later.');
+            }
+        });
+    </script>
+</body>
+</html>

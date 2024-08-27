@@ -1,0 +1,91 @@
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.blog-image {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    object-fit: cover;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+.blog-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #555;
+}
+
+.blog-date {
+    font-size: 14px;
+    color: #999;
+    margin-bottom: 20px;
+}
+
+.blog-content {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #444;
+}
+
+.actions {
+    margin-top: 30px;
+}
+
+.action-link {
+    display: inline-block;
+    margin-right: 15px;
+    padding: 10px 15px;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.edit-link {
+    background-color: #28a745;
+}
+
+.edit-link:hover {
+    background-color: #218838;
+}
+
+.delete-link {
+    background-color: #dc3545;
+}
+
+.delete-link:hover {
+    background-color: #c82333;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 15px;
+    background-color: #333;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.back-link:hover {
+    background-color: #555;
+}
